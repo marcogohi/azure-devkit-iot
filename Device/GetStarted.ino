@@ -111,6 +111,22 @@ void setup()
   }
 
   EEPROMInterface eeprom;
+  switch(eeprom.enableHostSecureChannel())
+  {
+    case 0:
+      LogInfo("SecChannel activated");
+      break;
+    case -1:
+      LogInfo("SecChannel error");
+      break;
+    case 1:
+      LogInfo("SecChannel already activated");
+      break;
+    default:
+      LogInfo("SecChannel error: WTF");
+      break;
+  }
+
   uint8_t temp[100];
   if (eeprom.read(temp, 100, 0, 5) == -1)
   {
@@ -121,8 +137,6 @@ void setup()
     LogInfo((char *)temp);
   }
   
-  
-
   Screen.print(3, " > Sensors");
   SensorInit();
 
