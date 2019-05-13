@@ -111,6 +111,7 @@ void setup()
   }
 
   EEPROMInterface eeprom;
+  /* Activate secure channel */
   switch(eeprom.enableHostSecureChannel())
   {
     case 0:
@@ -127,6 +128,7 @@ void setup()
       break;
   }
 
+  /* Example: Read connection string (datazone 5) */
   uint8_t temp[100];
   if (eeprom.read(temp, 100, 0, 5) == -1)
   {
@@ -134,7 +136,23 @@ void setup()
   }
   else
   {
-    LogInfo((char *)temp);
+    LogInfo("Conn String: %s", (char *)temp);
+  }
+
+  /* Write some random string and read it */
+  char *s = "test123";
+  if (eeprom.write((uint8_t *) s, strlen(s) + 1, 7) == -1)
+  {
+    LogInfo("Error writing");
+  }
+  /* Check the data */
+  if (eeprom.read(temp, 100, 0, 7) == -1)
+  {
+    LogInfo("Error reading");
+  }
+  else
+  {
+    LogInfo("User data written: %s", (char *)temp);
   }
   
   Screen.print(3, " > Sensors");
